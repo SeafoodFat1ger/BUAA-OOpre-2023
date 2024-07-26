@@ -15,6 +15,18 @@ public class AdventureTest {
     }
 
     @Test
+    public void getId() {
+        Adventure a1 = new Adventure(advId, s2);
+        assertEquals(a1.getId(), advId);
+    }
+
+    @Test
+    public void getName() {
+        Adventure a1 = new Adventure(advId, s2);
+        assertEquals(a1.getName(), s2);
+    }
+
+    @Test
     public void getEquipments() {
         Adventure a1 = new Adventure(advId, s2);
         assertEquals(a1.getEquipments().size(), 0);
@@ -139,6 +151,7 @@ public class AdventureTest {
         Adventure a1 = new Adventure(advId, s2);
         a1.addEqu(a1.getEquipments(), "12", "12", s3);
         a1.carryEqu(a1.getEquipments(), a1.getBagEquipments(), "12");
+        a1.carryEqu(a1.getEquipments(), a1.getBagEquipments(), "12");
         int i1 = Integer.parseInt(s1);
         a1.addEqu(a1.getEquipments(), s1, s2, s3);
         a1.carryEqu(a1.getEquipments(), a1.getBagEquipments(), s1);
@@ -156,6 +169,8 @@ public class AdventureTest {
         int i1 = Integer.parseInt(s1);
         a1.addBottle(a1.getBottles(), s1, s2, s3);
         a1.carryBot(a1.getBottles(), a1.getBagBottles(), s1);
+
+        a1.carryBot(a1.getBottles(), a1.getBagBottles(), s1);
         assertTrue(a1.getBagBottles().contains(a1.getBottles().get(i1)));
         a1.addBottle(a1.getBottles(), "11", s2, s3);
         a1.carryBot(a1.getBottles(), a1.getBagBottles(), "11");
@@ -163,6 +178,8 @@ public class AdventureTest {
         a1.addBottle(a1.getBottles(), "22", s2, s3);
         a1.carryBot(a1.getBottles(), a1.getBagBottles(), "22");
         assertFalse(a1.getBagBottles().contains(a1.getBottles().get(22)));
+        a1.addBottle(a1.getBottles(), "4", "notSame", s3);
+        a1.carryBot(a1.getBottles(), a1.getBagBottles(), "4");
     }
 
     @Test
@@ -182,6 +199,8 @@ public class AdventureTest {
         int i1 = Integer.parseInt(s1);
         a1.addBottle(a1.getBottles(), s1, s2, "2");
         a1.carryBot(a1.getBottles(), a1.getBagBottles(), s1);
+        a1.addBottle(a1.getBottles(), "4", "notSame", s3);
+        a1.carryBot(a1.getBottles(), a1.getBagBottles(), "4");
         a1.addBottle(a1.getBottles(), "0", s2, "1");
         a1.carryBot(a1.getBottles(), a1.getBagBottles(), "0");
         a1.useBot(a1.getBottles(), a1.getBagBottles(), s2);
@@ -203,6 +222,8 @@ public class AdventureTest {
         int i1 = Integer.parseInt(s1);
         a1.addFood(a1.getFoods(), s1, s2, "2");
         a1.carryFood(a1.getFoods(), a1.getBagFoods(), s1);
+        a1.addFood(a1.getFoods(), "4", "notSame", s3);
+        a1.carryFood(a1.getFoods(), a1.getBagFoods(), "4");
         a1.addFood(a1.getFoods(), "0", s2, "1");
         a1.carryFood(a1.getFoods(), a1.getBagFoods(), "0");
         a1.useFood(a1.getFoods(), a1.getBagFoods(), s2);
@@ -214,5 +235,48 @@ public class AdventureTest {
         assert (!a1.getBagFoods().contains(a1.getFoods().get(i1)));
         assert (!a1.getFoods().containsKey(i1));
         a1.useFood(a1.getFoods(), a1.getBagFoods(), s2);
+    }
+
+    @Test
+    public void useBotMode() {
+        Adventure a1 = new Adventure(advId, s2);
+        a1.setLevel(100);
+        int i1 = Integer.parseInt(s1);
+
+        a1.addBottle(a1.getBottles(), "4", "notSame", s3);
+        a1.carryBot(a1.getBottles(), a1.getBagBottles(), "4");
+
+        a1.addBottle(a1.getBottles(), "2", s2, "2");
+        a1.carryBot(a1.getBottles(), a1.getBagBottles(), "2");
+
+        a1.addBottle(a1.getBottles(), "3", s2, "1");
+        a1.carryBot(a1.getBottles(), a1.getBagBottles(), "3");
+
+        a1.addBottle(a1.getBottles(), "1", s2, "1");
+        a1.carryBot(a1.getBottles(), a1.getBagBottles(), "1");
+
+        assertTrue(a1.useBotMode(a1.getBottles(), a1.getBagBottles(), s2));
+        assertTrue(a1.useBotMode(a1.getBottles(), a1.getBagBottles(), s2));
+        assertTrue(a1.useBotMode(a1.getBottles(), a1.getBagBottles(), s2));
+        assertTrue(a1.useBotMode(a1.getBottles(), a1.getBagBottles(), s2));
+        assertTrue(a1.useBotMode(a1.getBottles(), a1.getBagBottles(), s2));
+        assertTrue(a1.useBotMode(a1.getBottles(), a1.getBagBottles(), s2));
+        assertFalse(a1.useBotMode(a1.getBottles(), a1.getBagBottles(), s2));
+    }
+
+    @Test
+    public void useStar() {
+        Adventure a1 = new Adventure(advId, s2);
+        a1.addEqu(a1.getEquipments(), "1", "1", "1");
+        a1.carryEqu(a1.getEquipments(), a1.getBagEquipments(), "1");
+        a1.addEqu(a1.getEquipments(), "2", "2", "2");
+        a1.carryEqu(a1.getEquipments(), a1.getBagEquipments(), "2");
+        a1.addEqu(a1.getEquipments(), "3", "3", "3");
+        a1.carryEqu(a1.getEquipments(), a1.getBagEquipments(), "3");
+        assertEquals(a1.useStar(a1.getEquipments(), a1.getBagEquipments(), "1"), 1);
+        assertEquals(a1.useStar(a1.getEquipments(), a1.getBagEquipments(), "2"), 2);
+        assertEquals(a1.useStar(a1.getEquipments(), a1.getBagEquipments(), "3"), 3);
+        assertEquals(a1.useStar(a1.getEquipments(), a1.getBagEquipments(), "4"), -1);
+
     }
 }

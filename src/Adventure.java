@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 //可能会存在ID不同但名字相同的情况
@@ -6,6 +7,14 @@ public class Adventure {
     private int id;
     private String name;
     private int hitPoint;
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public int getLevel() {
         return level;
@@ -24,6 +33,8 @@ public class Adventure {
         this.bagBottles = new HashSet<>();
         this.bagEquipments = new HashSet<>();
         this.bagFoods = new HashSet<>();
+        this.beAttack = new ArrayList<>();
+        this.attack = new ArrayList<>();
     }
 
     public HashMap<Integer, Bottle> getBottles() {
@@ -42,8 +53,7 @@ public class Adventure {
     private HashMap<Integer, Equipment> equipments;
     private HashMap<Integer, Food> foods;
 
-    public void addBottle(HashMap<Integer, Bottle> bottles, String id,
-                          String botName, String cap) {
+    public void addBottle(HashMap<Integer, Bottle> bottles, String id, String botName, String cap) {
         //5.保证增加的装备和药水瓶原本不存在
         int botId = Integer.parseInt(id);
         int capacity = Integer.parseInt(cap);
@@ -61,8 +71,7 @@ public class Adventure {
         this.getBagBottles().remove(bottle);
     }
 
-    public void addFood(HashMap<Integer, Food> foods, String id,
-                        String botName, String s) {
+    public void addFood(HashMap<Integer, Food> foods, String id, String botName, String s) {
         //5.保证增加的装备和药水瓶原本不存在
         int foodId = Integer.parseInt(id);
         int energy = Integer.parseInt(s);
@@ -80,8 +89,8 @@ public class Adventure {
         this.getBagFoods().remove(food);
     }
 
-    public void addEqu(HashMap<Integer, Equipment> equipments, String id, String equName
-            , String s) {
+    public void addEqu(HashMap<Integer, Equipment> equipments,
+                       String id, String equName, String s) {
         //5.保证增加的装备和药水瓶原本不存在
         int equId = Integer.parseInt(id);
         int star = Integer.parseInt(s);
@@ -181,8 +190,8 @@ public class Adventure {
         bagFoods.add(food1);
     }
 
-    public void useBot(HashMap<Integer, Bottle> bottles, HashSet<Bottle> bagBottles,
-                       String botName) {
+    public void useBot(HashMap<Integer, Bottle> bottles,
+                       HashSet<Bottle> bagBottles, String botName) {
         //操作 12-13 不保证提到的物品已经被携带
         boolean flag = false;
         Bottle botMin = new Bottle(2147483647, "", 0);
@@ -228,6 +237,58 @@ public class Adventure {
         } else {
             System.out.println("fail to eat " + foodName);
         }
+    }
+
+    public boolean useBotMode(HashMap<Integer, Bottle> bottles,
+                              HashSet<Bottle> bagBottles, String botName) {
+        //操作 12-13 不保证提到的物品已经被携带
+        boolean flag = false;
+        Bottle botMin = new Bottle(2147483647, "", 0);
+        for (Bottle obj : bagBottles) {
+            if (obj.getName().equals(botName)) {
+                flag = true;
+                if (obj.getId() <= botMin.getId()) {
+                    botMin = obj;
+                }
+            }
+        }
+        if (flag) {
+            if (botMin.isFilled()) {
+                this.setHitPoint(this.getHitPoint() + botMin.getCapacity());
+                botMin.setFilled(false);
+            } else {
+                bagBottles.remove(botMin);
+                bottles.remove(botMin.getId());
+            }
+            System.out.println(botMin.getId() + " " + this.getHitPoint());
+            return true;
+        } else {
+            System.out.println("Fight log error");
+            return false;
+        }
+    }
+
+    public int useStar(HashMap<Integer, Equipment> equipments,
+                       HashSet<Equipment> bagEquipments, String equName) {
+        int star = -1;
+        for (Equipment obj : bagEquipments) {
+            if (obj.getName().equals(equName)) {
+                star = obj.getStar();
+                break;
+            }
+        }
+        return star;
+    }
+
+    private ArrayList<Log> beAttack;
+    private ArrayList<Log> attack;
+
+    public ArrayList<Log> getBeAttack() {
+        return beAttack;
+    }
+
+    public ArrayList<Log> getAttack() {
+        return attack;
     }
 
 }
